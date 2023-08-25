@@ -144,12 +144,14 @@ def add_review(request, dealer_id):
     if request.user.is_authenticated:
         # GET request renders the page with the form for filling out a review
         if request.method == "GET":
-            url = f"https://us-south.functions.appdomain.cloud/api/v1/web/5394383b-e89b-48d5-95c2-e01bbaee52b5/dealership-package/get-all-dealership?dealerId={dealer_id}"
+            url = "https://us-south.functions.appdomain.cloud/api/v1/web/5394383b-e89b-48d5-95c2-e01bbaee52b5/dealership-package/all-dealership.json"
+            dealerships = get_dealers_from_cf(url)
             # get dealer details from the API
-            context = {
-                "cars": CarModel.objects.all(),
-                "dealer": get_dealer_by_id(url, dealer_id=dealer_id),
-            }
+            if dealer_id == 3:
+                context = {
+                    "cars": CarModel.objects.all(),
+                    "dealer": dealerships,
+                }
             return render(request, 'djangoapp/add_review.html', context)
         # POST request posts the content in the review submission form to the Cloudant DB using the post_review Cloud Function
         if request.method == "POST":
